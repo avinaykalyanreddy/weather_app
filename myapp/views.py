@@ -64,16 +64,18 @@ def input_func(request):
                 model = genai.GenerativeModel("gemini-3-flash-preview")
                 try:
                    ai_response = model.generate_content(prompt)
+                   ai_text = ai_response.text
+
 
                 except:
 
-                    ai_response = "AI service temporarily unavailable"
+                    ai_text = "AI service temporarily unavailable"
 
                 result = {
                     "city": city,
                     "temp": current["temp_c"],
                     "condition": current["condition"]["text"],
-                    "ai": ai_response.text
+                    "ai": ai_text
                 }
 
             else:
