@@ -62,7 +62,12 @@ def input_func(request):
                 """
 
                 model = genai.GenerativeModel("gemini-3-flash-preview")
-                ai_response = model.generate_content(prompt)
+                try:
+                   ai_response = model.generate_content(prompt)
+
+                except:
+
+                    ai_response = "AI service temporarily unavailable"
 
                 result = {
                     "city": city,
