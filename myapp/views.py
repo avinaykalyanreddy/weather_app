@@ -3,9 +3,11 @@ from .forms import InputForm
 import requests
 import google.generativeai as genai
 from django.contrib import messages
+import os
 
 
-genai.configure(api_key="AIzaSyB1ajoncje0cFSy9fROzJm1YO3j5wyX8Hs")
+
+genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
 def input_func(request):
 
