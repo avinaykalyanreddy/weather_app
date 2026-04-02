@@ -1,3 +1,5 @@
+from sys import exception
+
 from django.shortcuts import render
 from .forms import InputForm
 import requests
@@ -8,6 +10,7 @@ import os
 
 
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+
 
 def input_func(request):
 
@@ -61,14 +64,29 @@ def input_func(request):
                 Fruits Crops pick top 6 where people use daily for each section 
                 """
 
-                model = genai.GenerativeModel("gemini-3-flash-preview")
-                try:
-                   ai_response = model.generate_content(prompt)
-                   ai_text = ai_response.text
+
+                models = ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-flash-latest", "gemini-2.5-flash-lite",
+                          "gemini-pro-latest", "gemini-2.0-flash",
+                          "gemini-2.0-flash-001", "gemini-2.0-flash-lite", "gemini-2.0-flash-lite-001",
+                          "gemini-3-flash-preview", "gemini-3-pro-preview",
+                          "gemini-3-pro-preview", "gemini-3.1-pro-preview", "gemini-3.1-flash-lite-preview",
+                          "gemma-3-27b-it", "gemma-3-12b-it", "gemma-3-12b-it",
+                          "gemma-3-4b-it", "gemma-3-1b-it"]
+
+                for m in models:
+
+                    model = genai.GenerativeModel(m)
+
+                    try:
+                        ai_response = model.generate_content(prompt)
+                        ai_text = ai_response.text
+                        break
 
 
-                except:
-
+                    except Exception as e:
+                        print(f"Model {m} failed:", e)
+                        continue
+                else:
                     ai_text = "AI service temporarily unavailable"
 
                 result = {
