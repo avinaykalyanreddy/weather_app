@@ -156,6 +156,21 @@
                 flex-direction: column;
             }
         }
+
+               table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #4caf50;
+            color: white;
+        }
     </style>
 </head>
 
@@ -185,6 +200,7 @@
         <form method="POST" id="weatherForm">
             {% csrf_token %}
             {{ form.city }}
+            {{ form.language_field }}
             <button type="submit" id="submitBtn">Get Insights</button>
         </form>
     </div>
@@ -206,7 +222,7 @@
     <div class="card">
         <h3>🧠 AI Recommendations</h3>
         <div class="ai-box">
-            {{ result.ai }}
+            {{ result.ai|safe }}
         </div>
     </div>
     {% endif %}

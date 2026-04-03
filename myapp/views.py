@@ -9,7 +9,7 @@ import os
 
 
 
-genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+genai.configure(api_key=os.getenv("GOOGLE_API_KEY")
 
 
 def input_func(request):
@@ -29,7 +29,7 @@ def input_func(request):
 
             if "error" not in data:
                 current = data["current"]
-
+                language = form.cleaned_data["language_field"]
                 # Build AI prompt
                 prompt = f"""
                 You are an expert agriculture advisor.
@@ -60,7 +60,7 @@ def input_func(request):
                 - No paragraphs
                 - Make it easy for farmers to read
                 
-                with more accurate data mention header Name | Duration | Shelf Life | Reason for each section vegetable 
+                give content in {language} with html tags make each section with table with more accurate data mention header Name | Duration | Shelf Life | Reason for each section vegetable 
                 Fruits Crops pick top 6 where people use daily for each section 
                 """
 

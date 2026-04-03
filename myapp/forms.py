@@ -9,3 +9,6 @@ class InputForm(forms.Form):
                            })
                            )
 
+    languages = [("english","English"),("telugu","Telugu"),("kannada","Kannada"),("tamil","Tamil"),("hindi","Hindi")]
+
+    language_field = forms.ChoiceField(choices=languages)
