@@ -207,45 +207,110 @@
 
     <!-- Result -->
     {% if result %}
-    <div class="card">
-        <div class="weather-box">
-            <div>
-                <h3>{{ result.city }}</h3>
-                <p>{{ result.condition }}</p>
+
+        <div class="card">
+            <div class="weather-box">
+                <div>
+                    <h3>{{ result.city }}</h3>
+                    <p>{{ result.condition }}</p>
+                </div>
+                <div class="temp">
+                    {{ result.temp }}°C
+                </div>
             </div>
-            <div class="temp">
-                {{ result.temp }}°C
+        </div>
+
+        <div class="card">
+            <h3>📊 7-Day Temperature Trend</h3>
+            <canvas id="weatherChart"></canvas>
+        </div>
+
+        <div class="card">
+        <h3>📅 7-Day Forecast</h3>
+
+        <div style="display:flex; gap:10px; overflow-x:auto;">
+            {% for day in result.forecast_days %}
+            <div style="min-width:140px; background:#f9f9f9; padding:10px; border-radius:10px; text-align:center;">
+
+                <strong>{{ day.date }}</strong>
+                <br><br>
+
+                <img src="https:{{ day.day.condition.icon }}" width="50">
+
+                <p>{{ day.day.condition.text }}</p>
+
+                <p>
+                    🌡️ {{ day.day.maxtemp_c }}° / {{ day.day.mintemp_c }}°
+                </p>
+
             </div>
+            {% endfor %}
         </div>
     </div>
 
-    <div class="card">
-        <h3>🧠 AI Recommendations</h3>
-        <div class="ai-box">
-            {{ result.ai|safe }}
+        <div class="card">
+            <h3>🧠 AI Recommendations</h3>
+            <div class="ai-box">
+                {{ result.ai|safe }}
+            </div>
         </div>
-    </div>
-    {% endif %}
+        {% endif %}
 
 </div>
 
 <!-- JS -->
-<script>
-    const form = document.getElementById("weatherForm");
-    const loader = document.getElementById("loader");
-    const btn = document.getElementById("submitBtn");
+    <script>
+        const form = document.getElementById("weatherForm");
+        const loader = document.getElementById("loader");
+        const btn = document.getElementById("submitBtn");
 
-    form.addEventListener("submit", function() {
-        loader.style.display = "flex";
-        btn.disabled = true;
-        btn.innerText = "Loading...";
+        form.addEventListener("submit", function() {
+            loader.style.display = "flex";
+            btn.disabled = true;
+            btn.innerText = "Loading...";
+        });
+
+        // Fix: Hide loader on page load (after response)
+        window.onload = function() {
+            loader.style.display = "none";
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+    {% if result %}
+    const ctx = document.getElementById('weatherChart');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ result.forecast.dates|safe }},
+            datasets: [
+                {
+                    label: 'Max Temp (°C)',
+                    data: {{ result.forecast.max_temps|safe }},
+                    borderWidth: 2,
+                    tension: 0.3
+                },
+                {
+                    label: 'Min Temp (°C)',
+                    data: {{ result.forecast.min_temps|safe }},
+                    borderWidth: 2,
+                    tension: 0.3
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top'
+                }
+            }
+        }
     });
-
-    // Fix: Hide loader on page load (after response)
-    window.onload = function() {
-        loader.style.display = "none";
-    };
-</script>
+    {% endif %}
+    </script>
 
 </body>
 </html>

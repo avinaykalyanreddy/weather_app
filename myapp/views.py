@@ -9,7 +9,7 @@ import os
 
 
 
-genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+genai.configure(api_key="AIzaSyAsCUvdFeu2THZvN3yL1ZmP8N2XLncLuP4")
 
 
 def input_func(request):
@@ -23,13 +23,26 @@ def input_func(request):
             city = form.cleaned_data["city"]
 
             # Weather API
-            url = f"http://api.weatherapi.com/v1/forecast.json?key=a15695c861f74c7cacb74541263003&q={city}&days=1"
+            url = f"http://api.weatherapi.com/v1/forecast.json?key=a15695c861f74c7cacb74541263003&q={city}&days=7"
             res = requests.get(url)
             data = res.json()
 
             if "error" not in data:
                 current = data["current"]
                 language = form.cleaned_data["language_field"]
+
+                forecast_days = data["forecast"]["forecastday"]
+                dates = []
+                max_temps = []
+                min_temps = []
+
+                for day in forecast_days:
+
+                    dates.append(day["date"])
+                    max_temps.append(day['day']['maxtemp_c'])
+                    min_temps.append(day['day']['mintemp_c'])
+
+
                 # Build AI prompt
                 prompt = f"""
                 You are an expert agriculture advisor.
@@ -93,7 +106,9 @@ def input_func(request):
                     "city": city,
                     "temp": current["temp_c"],
                     "condition": current["condition"]["text"],
-                    "ai": ai_text
+                    "ai": ai_text,
+                    "forecast": {"dates":dates,"max_temps":max_temps,"min_temps":min_temps},
+                    "forecast_days": forecast_days
                 }
 
             else:
