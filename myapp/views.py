@@ -9,7 +9,7 @@ import os
 
 
 
-genai.configure(api_key="AIzaSyAsCUvdFeu2THZvN3yL1ZmP8N2XLncLuP4")
+genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
 
 def input_func(request):
